@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import {reviewInput} from '../lib/review.ts';
+assert.deepEqual(reviewInput({}),{body:'',rating:0,verdict:'',liked:0});
+assert.equal(reviewInput({rating:5}).rating,5);
+assert.equal(reviewInput({liked:true}).liked,1);
+assert.equal(reviewInput({body:' Great film '}).body,'Great film');
+assert.equal(reviewInput({verdict:'home'}).verdict,'home');
+assert.deepEqual(reviewInput({rating:4,liked:true,body:'Loved it',verdict:'theatre'}),{rating:4,liked:1,body:'Loved it',verdict:'theatre'});
+for(const input of [{rating:6},{rating:'5'},{liked:'true'},{body:'x'.repeat(3001)},{verdict:'invalid'}])assert.throws(()=>reviewInput(input));
+console.log('Passed: blank log, stars only, like only, text only, verdict only, combined activity, invalid input rejection.');
