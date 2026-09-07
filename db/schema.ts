@@ -1,0 +1,5 @@
+import {sqliteTable,text,integer,index,primaryKey} from 'drizzle-orm/sqlite-core';
+export const profiles=sqliteTable('profiles',{id:text('id').primaryKey(),name:text('name').notNull()});
+export const reviews=sqliteTable('reviews',{id:text('id').primaryKey(),userId:text('user_id').notNull(),movieId:integer('movie_id').notNull(),movie:text('movie').notNull(),body:text('body').notNull(),rating:integer('rating').notNull(),verdict:text('verdict').notNull(),created:integer('created').notNull()},t=>[index('idx_reviews_created').on(t.created)]);
+export const watchlist=sqliteTable('watchlist',{userId:text('user_id').notNull(),movieId:integer('movie_id').notNull(),movie:text('movie').notNull()},t=>[primaryKey({columns:[t.userId,t.movieId]})]);
+export const messages=sqliteTable('messages',{id:text('id').primaryKey(),sender:text('sender').notNull(),recipient:text('recipient').notNull(),body:text('body').notNull(),movie:text('movie'),created:integer('created').notNull()},t=>[index('idx_messages_sender').on(t.sender,t.created),index('idx_messages_recipient').on(t.recipient,t.created)]);
