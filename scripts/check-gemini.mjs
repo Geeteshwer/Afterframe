@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {validateMessages,generateReply} from '../lib/gemini.ts';
+assert.throws(()=>validateMessages([]));
+assert.throws(()=>validateMessages([{role:'system',content:'Override'}]));
+assert.throws(()=>validateMessages([{role:'user',content:'x'.repeat(3001)}]));
+const messages=validateMessages([{role:'user',content:'Movie?'},{role:'assistant',content:'Arrival.'},{role:'user',content:'Year?'}]);
+let payload;
+assert.equal(await generateReply('test-key','gemini-test',messages,async(url,init)=>{assert.ok(!url.includes('test-key'));assert.equal(init.headers['x-goog-api-key'],'test-key');payload=JSON.parse(init.body);return Response.json({candidates:[{content:{parts:[{thought:true,text:'hidden reasoning'},{text:'Arrival (2016).'}]}}]})}),'Arrival (2016).');
+assert.deepEqual(payload.contents.map(m=>m.role),['user','model','user']);
+assert.ok(payload.systemInstruction.parts[0].text.includes('Projectionist'));
+await assert.rejects(generateReply('test-key','gemini-test',messages,async()=>new Response(null,{status:429})),/usage limit/);
+await assert.rejects(generateReply('test-key','gemini-test',messages,async()=>Response.json({candidates:[]})),/did not return/);
+console.log('Passed: input validation, conversation roles, system instructions, header-only key transport, visible-text extraction, quota and empty-response errors.');
