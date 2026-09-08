@@ -1,10 +1,10 @@
 import {secret, failure} from '@/lib/server';
-import {getChatGPTUser} from '@/app/chatgpt-auth';
+import {getSession} from '@/lib/supabase';
 import {generateReply, validateMessages} from '@/lib/gemini';
 
 export async function POST(request: Request) {
   if (request.headers.get('origin') !== new URL(request.url).origin) return failure(new Error('Invalid request origin.'),403);
-  if (!await getChatGPTUser()) return failure(new Error('Sign in to talk with the Projectionist.'),401);
+  if (!await getSession()) return failure(new Error('Sign in to talk with the Projectionist.'),401);
   let messages;
   try { messages = validateMessages((await request.json() as {messages?: unknown}).messages); }
   catch (error) { return failure(error,400); }
