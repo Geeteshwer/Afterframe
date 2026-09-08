@@ -1,4 +1,4 @@
-export type Movie={id:number;title:string;year:number;genre:string;poster:string;source?:string;overview:string};
+export type Movie={id:number;title:string;year:number;genre:string;genres?:string[];poster:string;source?:string;overview:string};
 export const movies:Movie[]=[
 {id:693134,title:'Dune: Part Two',year:2024,genre:'Sci-Fi',poster:'https://www.cinefilos.it/wp-content/uploads/2023/05/dune-parte-due-poster.jpg',source:'https://www.cinefilos.it/cinema-news/2023/dune-parte-due-ecco-il-primo-poster-del-film-con-timothee-chalamet-571121',overview:'Paul Atreides joins the Fremen on Arrakis, facing a choice between love and the fate of the universe.'},
 {id:157336,title:'Interstellar',year:2014,genre:'Sci-Fi',poster:'https://images.flickdirect.com/movies/interstellar/interstellar-poster.jpg',source:'https://flickdirect.com/movie-review/1258/interstellar/movie.ashx',overview:'A pilot and a team of explorers travel beyond our galaxy in search of a future for humanity.'},
