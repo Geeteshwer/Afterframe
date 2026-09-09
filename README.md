@@ -1,4 +1,4 @@
-# AfterDramw-Movie / Afterframe
+# AfterFrame-Movie / Afterframe
 
 A cinema-inspired movie discovery app with TMDB catalog search, Gemini conversations, optional star/like/text reviews, watchlists, Supabase email authentication, film clubs, and club recommendations.
 
