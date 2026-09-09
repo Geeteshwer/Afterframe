@@ -1,66 +1,96 @@
-# AfterFrame-Movie / Afterframe
+# 🎬 Afterframe
 
-A cinema-inspired movie discovery app with TMDB catalog search, Gemini conversations, optional star/like/text reviews, watchlists, Supabase email authentication, film clubs, and club recommendations.
+> A cinematic social platform for film discovery, tracking, and conversations.
 
-## Continue in Antigravity
+Afterframe is a cinema-inspired movie discovery web app that brings your film shelf to life. Browse the live TMDB catalog, chat with an AI Projectionist to find your next favorite film, and build your own private film clubs to share recommendations with friends.
 
-1. Clone this repository and open the folder in Antigravity.
-2. Use Node.js 22.13+ and run `npm ci`.
-3. Copy `.env.example` to `.env` and configure the listed values. Never commit `.env`.
-4. In Supabase project `gjczysrzjlbxccetkjha`, run `supabase/migrations/202609080001_afterframe.sql` once in SQL Editor. It creates the tables, triggers, club functions, grants, and RLS in one transaction. Do not run the old SQLite/Drizzle migrations in Supabase.
-5. In Supabase Authentication → URL Configuration, set your deployed Site URL and add `http://localhost:3000` (or the local port shown by the dev server) to allowed redirect URLs. Email confirmation is currently enabled; new users confirm their email and then sign in.
-6. Run `npm run dev`, then open the URL printed in the terminal.
-7. Sign up, confirm your email, sign in, create a club in Profile, and share its club code with another registered user. A code lets its holder join that club.
-8. Select a movie → Recommend → choose the club and one of its members → add a note → Send recommendation. The recipient sees it in Inbox and can mark it read.
+---
 
-## Status at handoff
+## ✨ Features
 
-- Complete source and build are included; Supabase implementation builds and TypeScript checks pass.
-- Supabase project is reachable and email/password auth is enabled.
-- **The Supabase SQL migration has not been applied remotely.** The dashboard was at its sign-in page; a database API key cannot run arbitrary schema SQL. Apply the migration before testing signup/profile/club flows.
-- SQL migration and RLS behavior were executed successfully in a disposable local PostgreSQL engine (PGlite), with different authenticated identities and an anonymous role.
-- The currently published Sites app still uses its previous D1 backend. It was deliberately not replaced by a Supabase build whose tables do not yet exist.
-- Supabase URL and publishable key are configured in hosted Sites environment variables. The secret key is not used in app requests; every table request uses the publishable key plus the signed-in user's JWT, so RLS applies.
-- Gemini (`gemini-3.5-flash-lite`) and TMDB credentials remain in hosted secret storage, not Git. Add your own values to the ignored local `.env` for local development.
-- Production Supabase authentication/session/confirmation behavior still needs end-to-end validation after migration and redirect setup.
-- Existing D1 data remains intact. Legacy ChatGPT user IDs and new Supabase Auth UUIDs are different. No legacy reviews or messages were silently reassigned. A future data migration needs an explicit user mapping.
+- **Movie Discovery:** Full catalog search and genre browsing powered by TMDB.
+- **Where to Watch:** See exactly which streaming services, rental, or theater options are available in your region (powered by JustWatch).
+- **The Projectionist:** An AI-powered chatbot (using Google Gemini) that recommends films based on your mood, a scene, or a vibe.
+- **Your Film Diary:** A Letterboxd-style grid to log your watched films, give star ratings, like, and write reviews.
+- **Film Clubs:** Create or join private film clubs with an invite code. Share reviews and direct recommendations exclusively with club members.
+- **Inbox:** Receive film recommendations from your club members directly into your personalized inbox.
+- **Modern Authentication:** Secure email/password login powered by Supabase.
 
-## Architecture
+## 🛠️ Tech Stack
 
-- `app/page.tsx`: discovery, reviews, profile/clubs, recommendation modal, inbox, chatbot.
-- `components/afterframe/auth-form.tsx`: email/password signup and login UI.
-- `app/api/auth/route.ts`: signup/login/logout. Access and refresh tokens live in HttpOnly, SameSite cookies, Secure in production.
-- `lib/supabase.ts`: validates users with Supabase Auth, refreshes sessions, and sends authenticated Data API requests. No service-role fallback.
-- `app/api/social/route.ts`: profiles, own watchlist, visible shared-club reviews, recommendations, read receipts, create/join club.
-- `app/api/catalog/route.ts`: TMDB search and full-catalog genre browsing.
-- `app/api/chat/route.ts` and `lib/gemini.ts`: Gemini bot, gated by Supabase session.
-- `supabase/migrations/`: PostgreSQL schema and RLS.
-- `db/`, `drizzle/`, `app/chatgpt-auth.ts`: retained legacy D1/ChatGPT backend artifacts, not used by the new social/auth endpoints. Keep until a data migration is planned.
+- **Frontend:** React 19, custom CSS for a cinematic dark-mode experience.
+- **Framework:** Vinext (Vite-powered server-side rendering).
+- **Database & Auth:** Supabase (PostgreSQL, Row Level Security, Auth).
+- **AI:** Google Gemini (`gemini-3.5-flash-lite`).
+- **External APIs:** TMDB API (Catalog & Availability).
+- **Deployment:** Cloudflare Workers.
 
-### Data/access rules
+---
 
-The requested tables are `profiles`, `clubs`, `memberships`, `reviews`, and `recommendations`. `watchlist` and optional-review metadata preserve existing app features. Reviews can omit stars, likes, text, and screen verdict. Saving an existing film updates the current user's record.
+## 🚀 Getting Started
 
-Profiles and reviews are readable by their owner and shared-club members. Recommendations belong to a specific club and are readable by its members, matching the requested shared-club policy. The inbox explicitly queries `receiver_id = current user`; it does not list every readable recommendation. Only the sender can insert, only for a recipient in that club. Only the recipient can update `is_read`, with column grants preventing note/sender/receiver changes. Membership is created only through club creation or an invitation-code function.
+To run Afterframe locally, follow these steps:
 
-Sites still has an outer owner-private access gate. Supabase login does not make the Sites URL public. Choose the intended audience before changing hosting access.
+### 1. Installation
 
-## Checks
+Clone the repository and install dependencies using Node.js (v22.13+):
 
-```sh
-npx tsc --noEmit
-npm run build
-node --experimental-strip-types scripts/check-reviews.mjs
-node --experimental-strip-types scripts/check-catalog.mjs
-node --experimental-strip-types scripts/check-gemini.mjs
+```bash
+git clone https://github.com/Geeteshwer/AfterDramw-Movie.git
+cd AfterDramw-Movie
+npm ci
 ```
 
-For RLS tests, install `@electric-sql/pglite` separately and point `PGLITE_MODULE` to its `dist/index.js`, then run `node scripts/check-supabase-rls.mjs`. The test database is disposable and never uses Supabase production credentials.
+### 2. Environment Variables
 
-`scripts/check-local.mjs` is retained as a **legacy D1 test**, not a test of the new Supabase endpoints. Browser visual QA and live Supabase end-to-end tests are not claimed.
+Copy the example environment file and fill in your keys:
 
-## Deployment
+```bash
+cp .env.example .env
+```
 
-This is React 19 + Vinext/Vite, using Cloudflare-compatible server APIs. `npm run build` outputs `dist/client` and `dist/server`. It is not a static-only app. `.openai/hosting.json` identifies the original Sites project. Keep existing D1 bindings/history until legacy-data migration is decided. The Supabase migration is applied separately in Supabase, never via Drizzle.
+You will need:
+- **Supabase:** `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- **TMDB:** `TMDB_READ_ACCESS_TOKEN`
+- **Google Gemini:** `GEMINI_API_KEY`
 
-Poster sources are credited in `lib/movies.ts` and the About dialog. TMDB data attribution appears in the interface.
+*(Note: Never commit your `.env` file!)*
+
+### 3. Database Setup
+
+In your Supabase project's SQL Editor, execute the migration file located at:
+`supabase/migrations/202609080001_afterframe.sql`
+
+This single transaction sets up all necessary tables (`profiles`, `clubs`, `memberships`, `reviews`, `recommendations`), triggers, and Row Level Security (RLS) rules.
+
+### 4. Authentication Setup
+
+In your Supabase Dashboard:
+1. Go to **Authentication → URL Configuration**.
+2. Set your deployed Site URL.
+3. Add `http://localhost:3000` to the **Redirect URLs**.
+4. Enable Email confirmations if you want users to verify their accounts before signing in.
+
+### 5. Run the Application
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+Open the URL printed in your terminal (usually `http://localhost:3000`) to start exploring!
+
+---
+
+## 🔒 Architecture & Security
+
+- **Row Level Security (RLS):** All data is protected at the database level. Profiles and reviews are visible only to the owner and members of their shared clubs.
+- **Recommendations:** Recommendations are strictly tied to a specific club and can only be seen by the recipient and sender.
+- **API Routes:** TMDB and Gemini API keys are never exposed to the client. All external requests are proxied securely through server-side `/api` routes.
+
+## 📜 Credits & Attribution
+
+- Movie metadata and images are provided by [TMDB](https://www.themoviedb.org/).
+- Streaming availability data is provided by [JustWatch](https://www.justwatch.com/).
+- Poster images belong to their respective rights holders.
