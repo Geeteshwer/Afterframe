@@ -2,6 +2,8 @@
 
 > A cinematic social platform for film discovery, tracking, and conversations.
 
+**[🌐 View Live Demo](https://sites-project.afterframe.workers.dev)**
+
 Afterframe is a cinema-inspired movie discovery web app that brings your film shelf to life. Browse the live TMDB catalog, chat with an AI Projectionist to find your next favorite film, and build your own private film clubs to share recommendations with friends.
 
 ---
