@@ -12,3 +12,349 @@ nav button{border:0;padding:8px 0;font-size:14px;border-radius:0;color:#a8aa9f}n
 .inbox-layout{display:grid;grid-template-columns:250px 1fr;gap:35px;margin-top:35px}.inbox-item>small{color:#b8c79f}.profile-clubs{border-bottom:1px solid #48553b;padding-bottom:24px}.profile-clubs .message-form{margin-top:16px}.club-summary{margin:16px 0;padding:14px;border:1px solid #465439;border-radius:8px}.club-summary label{display:block;font-size:12px;color:#b4c1a2;margin-top:10px}.club-summary input{display:block;width:100%;margin-top:6px;background:#11180d;border:1px solid #465439;padding:8px;font:12px monospace;border-radius:5px}.unread-dot{height:7px;width:7px;background:#d3f66b;border-radius:50%;animation:pulse 2s infinite}@media(max-width:760px){.inbox-layout{grid-template-columns:1fr}.inbox-layout .club-panel{display:flex;flex-wrap:wrap;gap:8px}.inbox-layout .club-panel h3{width:100%}.inbox-layout .club-panel button{width:auto}.profile-clubs .message-form{flex-wrap:wrap}}
 .chat-movies{display:flex;flex-direction:column;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid #3a4a2e}.chat-movie-card{display:flex;gap:14px;background:#1a2214;border:1px solid #3d4e30;border-radius:10px;padding:12px;transition:border-color .25s,box-shadow .25s}.chat-movie-card:hover{border-color:#d3f66b55;box-shadow:0 0 20px #d3f66b0d}.chat-movie-poster{flex-shrink:0;width:72px;height:108px;border-radius:6px;overflow:hidden;padding:0;border:1px solid #4a5a3a;background:#252c1e;cursor:pointer;position:relative}.chat-movie-poster img{width:100%;height:100%;object-fit:cover;transition:transform .4s}.chat-movie-poster:hover img{transform:scale(1.06)}.chat-poster-fallback{display:grid;place-items:center;height:100%;padding:6px;font:13px Georgia;text-align:center;color:#a5b894}.chat-movie-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}.chat-movie-title{border:0;padding:0;font-size:15px;font-weight:600;letter-spacing:-.2px;text-align:left;justify-content:flex-start;gap:6px;line-height:1.3;color:#f0f5e8}.chat-movie-title:hover{background:transparent;color:#d3f66b}.chat-movie-meta{font-size:12px;color:#99a58a;letter-spacing:.3px}.chat-movie-overview{font-size:13px;color:#b0bda0;line-height:1.45;margin:4px 0 2px}.chat-movie-actions{display:flex;gap:8px;margin-top:auto}.chat-movie-actions button{font-size:11px;padding:5px 10px;border-radius:6px;border:1px solid #495c38;background:transparent;gap:5px}.chat-movie-actions button:hover{background:#344422;border-color:#d3f66b}@media(max-width:760px){.chat-movie-card{gap:10px;padding:10px}.chat-movie-poster{width:58px;height:87px}.chat-movie-title{font-size:14px}.chat-movie-overview{display:none}.chat-movie-actions button{font-size:10px;padding:4px 8px}}.availability-section{background:#1a2016;border:1px solid #364028;border-radius:10px;padding:16px;margin:16px 0}.availability-section h4{margin:0 0 12px;font-size:15px;font-weight:600;color:#d3f66b}.availability-section.loading{display:flex;align-items:center;gap:10px;color:#919b83}.spin{animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.provider-chips{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}.provider-chip{width:42px;height:42px;border-radius:8px;overflow:hidden;background:#111;border:1px solid #3d4a2e}.provider-chip img{width:100%;height:100%;object-fit:cover}.justwatch-link{display:inline-block;color:#f3f4ed;font-size:13px;border:1px solid #4a5a3a;padding:6px 12px;border-radius:20px;transition:all 0.2s}.justwatch-link:hover{background:#d3f66b;color:#111;border-color:#d3f66b}.attribution{font-size:11px;color:#7e876e;margin-top:14px;display:flex;align-items:center;gap:6px}
 .profile-films-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:15px;margin-top:15px;max-height:45vh;overflow-y:auto;padding-right:10px}.profile-film-card{display:flex;flex-direction:column;gap:6px;background:transparent;border:0;padding:0;text-align:left;align-items:center;width:100%}.profile-film-card:hover .profile-film-poster{transform:translateY(-3px);border-color:#d3f66b;box-shadow:0 0 15px #d3f66b1a}.profile-film-poster{width:100%;aspect-ratio:2/3;border-radius:6px;border:1px solid #3d4a2e;overflow:hidden;background:#1a2016;transition:all 0.25s}.profile-film-poster img{width:100%;height:100%;object-fit:cover;transition:transform 0.4s}.profile-film-card:hover .profile-film-poster img{transform:scale(1.05)}.profile-poster-fallback{display:grid;place-items:center;height:100%;padding:6px;font:11px Georgia;text-align:center;color:#a5b894;word-break:break-word}.profile-film-rating{font-size:12px;display:flex;align-items:center;gap:4px}.stars-given{color:#d3f66b}.liked-heart{color:#ff5a5a;margin-top:1px}
+
+/* ============================================================
+   SCROLL ANIMATIONS — Cinematic reveal system
+   ============================================================ */
+
+/* --- Scroll-reveal: fade + slide up --- */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.scroll-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* --- Slide from left --- */
+.scroll-reveal-left {
+  opacity: 0;
+  transform: translateX(-60px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.scroll-reveal-left.revealed {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* --- Slide from right --- */
+.scroll-reveal-right {
+  opacity: 0;
+  transform: translateX(60px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.scroll-reveal-right.revealed {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* --- Scale-in effect for feature cards --- */
+.scroll-reveal-scale {
+  opacity: 0;
+  transform: scale(0.92);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.scroll-reveal-scale.revealed {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* --- Staggered movie card entrance --- */
+.movie-grid.revealed .movie-card {
+  animation: cardReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.movie-grid.revealed .movie-card:nth-child(1) { animation-delay: 0.05s; }
+.movie-grid.revealed .movie-card:nth-child(2) { animation-delay: 0.1s; }
+.movie-grid.revealed .movie-card:nth-child(3) { animation-delay: 0.15s; }
+.movie-grid.revealed .movie-card:nth-child(4) { animation-delay: 0.2s; }
+.movie-grid.revealed .movie-card:nth-child(5) { animation-delay: 0.25s; }
+.movie-grid.revealed .movie-card:nth-child(6) { animation-delay: 0.3s; }
+.movie-grid.revealed .movie-card:nth-child(7) { animation-delay: 0.35s; }
+.movie-grid.revealed .movie-card:nth-child(8) { animation-delay: 0.4s; }
+.movie-grid.revealed .movie-card:nth-child(n+9) { animation-delay: 0.45s; }
+
+@keyframes cardReveal {
+  from {
+    opacity: 0;
+    transform: translateY(50px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Movie cards start invisible until grid is revealed */
+.movie-grid:not(.revealed) .movie-card {
+  opacity: 0;
+}
+
+/* --- Hero title cinematic entrance --- */
+.hero-animate h1 {
+  animation: heroSlideIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+}
+.hero-animate .eyebrow {
+  animation: heroFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0s both;
+}
+.hero-animate .intro-right {
+  animation: heroSlideRight 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+}
+
+@keyframes heroSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(60px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes heroFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes heroSlideRight {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+    filter: blur(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+    filter: blur(0);
+  }
+}
+
+/* --- Cinematic Film Reel Marquee --- */
+.film-marquee-wrap {
+  overflow: hidden;
+  position: relative;
+  margin: 36px -5% 0;
+  padding: 0 0 6px;
+}
+.film-marquee-wrap::before,
+.film-marquee-wrap::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 120px;
+  z-index: 2;
+  pointer-events: none;
+}
+.film-marquee-wrap::before {
+  left: 0;
+  background: linear-gradient(90deg, var(--background), transparent);
+}
+.film-marquee-wrap::after {
+  right: 0;
+  background: linear-gradient(-90deg, var(--background), transparent);
+}
+
+.film-marquee {
+  display: flex;
+  gap: 16px;
+  animation: marqueeScroll 35s linear infinite;
+  width: max-content;
+}
+.film-marquee:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marqueeScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.marquee-poster {
+  flex-shrink: 0;
+  width: 130px;
+  height: 195px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #3a4630;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.3s,
+              box-shadow 0.3s;
+}
+.marquee-poster:hover {
+  transform: scale(1.08) translateY(-6px);
+  border-color: #d3f66b;
+  box-shadow: 0 8px 30px #d3f66b18, 0 0 60px #d3f66b08;
+  z-index: 3;
+}
+.marquee-poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s;
+}
+.marquee-poster:hover img {
+  transform: scale(1.1);
+}
+.marquee-poster .marquee-title {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,0.85));
+  padding: 30px 10px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #f4f5ee;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.marquee-poster:hover .marquee-title {
+  opacity: 1;
+}
+
+/* --- Glowing gradient accent line --- */
+.glow-line {
+  height: 2px;
+  margin: 48px 0 0;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    #d3f66b44 15%,
+    #d3f66b 50%,
+    #d3f66b44 85%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: glowSweep 4s ease-in-out infinite;
+  border-radius: 2px;
+}
+
+@keyframes glowSweep {
+  0%, 100% { background-position: 200% 0; }
+  50% { background-position: -200% 0; }
+}
+
+/* --- Section divider with cinematic feel --- */
+.section-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 50px 0 10px;
+  opacity: 0;
+  transform: scaleX(0.3);
+  transition: opacity 0.6s, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.section-divider.revealed {
+  opacity: 1;
+  transform: scaleX(1);
+}
+.section-divider::before,
+.section-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #d3f66b44, transparent);
+}
+.section-divider span {
+  font: 11px monospace;
+  letter-spacing: 3px;
+  color: #7a8568;
+  white-space: nowrap;
+}
+
+/* --- Floating film grain overlay (subtle) --- */
+.film-grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 128px 128px;
+}
+
+/* --- Bot card entrance animation --- */
+.bot-card-animate {
+  animation: botCardEnter 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both;
+}
+
+@keyframes botCardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.97);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* --- Respect reduced motion --- */
+@media (prefers-reduced-motion: reduce) {
+  .scroll-reveal,
+  .scroll-reveal-left,
+  .scroll-reveal-right,
+  .scroll-reveal-scale {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .movie-grid .movie-card {
+    opacity: 1 !important;
+    animation: none !important;
+  }
+  .hero-animate h1,
+  .hero-animate .eyebrow,
+  .hero-animate .intro-right {
+    animation: none !important;
+  }
+  .film-marquee {
+    animation: none !important;
+  }
+  .glow-line {
+    animation: none !important;
+  }
+  .section-divider {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .bot-card-animate {
+    animation: none !important;
+  }
+}
+
+/* --- Mobile tweaks for marquee --- */
+@media (max-width: 760px) {
+  .marquee-poster {
+    width: 100px;
+    height: 150px;
+  }
+  .film-marquee {
+    gap: 12px;
+  }
+  .film-marquee-wrap {
+    margin: 24px -4% 0;
+  }
+}
